@@ -1,0 +1,822 @@
+//  // const initialfilterPanel = filterPanel.querySelector('.ag-virtual-list-viewport')
+//  //    if (initialfilterPanel) {
+//     //   initialfilterPanel.style.overflow = 'hidden'; // No inner scroll
+//     //   if(!filterPanel.querySelector('.show-more-button')) {
+//     //     initialfilterPanel.style.height = '100px !important';
+//     //   } else {
+//     //     initialfilterPanel.style.height = 'auto';
+//     //   }
+//     // }
+
+//     import {AfterViewInit, Component, Inject, Injectable, OnDestroy} from '@angular/core';
+// import {SelectionModel} from '@angular/cdk/collections';
+// import {FlatTreeControl, NestedTreeControl} from '@angular/cdk/tree';
+// import {MatTreeFlattener, MatTreeFlatDataSource, MatTreeNestedDataSource} from '@angular/material/tree';
+// import {of as ofObservable, Observable, BehaviorSubject} from 'rxjs';
+// import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+// import { MatCheckboxModule } from '@angular/material/checkbox';
+// import { MatFormFieldModule } from '@angular/material/form-field';
+// import { MatInputModule } from '@angular/material/input';
+// import { FormsModule } from '@angular/forms';
+// import { MatTreeModule } from '@angular/material/tree';
+// import { MatIconModule } from '@angular/material/icon';
+// import { MatButtonModule } from '@angular/material/button';
+// import { NgFor, NgIf } from '@angular/common';
+
+// interface TreeNode {
+//     name: string;
+//     children?: TreeNode[];
+//     expanded?: boolean; // For toggling visibility
+//     searchText?: string; // For search input
+//   }
+// /**
+//  * @title Tree with checkboxes
+//  */
+// @Component({
+//   selector: 'tree-checklist-example',
+//   templateUrl: 'tree-checklist-example.html',
+//   styleUrls: ['tree-checklist-example.css'],
+//   imports: [FormsModule,MatInputModule,NgFor,NgIf,
+//     MatTreeModule, MatCheckboxModule, MatIconModule, MatFormFieldModule,MatDialogModule,MatFormFieldModule, MatButtonModule
+//   ],
+//   standalone: true,
+// })
+// export class TreeChecklistExample implements AfterViewInit, OnDestroy {
+//   private filtersWithMoreThanFiveItems = new Set<string>(); // Tracks filters where "Show More" was added
+
+//   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+
+//   ngAfterViewInit() {
+//     const filterPanel = this.data.gridApi.getToolPanelInstance('filters');
+//     if (filterPanel) {
+//       const container = document.getElementById('filterPanelContainer');
+//       if (container) {
+//         container.innerHTML = ''; // Clear previous content
+//         container.appendChild(filterPanel.getGui()); // Append AG Grid filter panel
+
+//         // Listen for filter expansion after loading
+//         this.listenForFilterExpansion();
+//       }
+//     }
+//   }
+
+//   private listenForFilterExpansion() {
+//     const filterPanels = document.querySelectorAll('.ag-filter-toolpanel-group-wrapper');
+
+//     filterPanels.forEach((filterPanel: any) => {
+//       const filterHeader = filterPanel.querySelector('.ag-filter-toolpanel-header');
+
+//       // Listen for click on filter headers to track expansion
+//       filterHeader.addEventListener('click', () => {
+//         setTimeout(() => {
+//           this.applyShowMoreToExpandedFilter(filterPanel);
+//         }, 200);
+//       });
+//     });
+//   }
+//   private applyShowMoreToExpandedFilter(filterPanel: any) {
+//     const filterItems = filterPanel.querySelectorAll('.ag-virtual-list-item.ag-filter-virtual-list-item');
+  
+//     // Check if "Show More" was already clicked for this filter
+//     const alreadyExpanded = this.filtersWithMoreThanFiveItems.has(filterPanel.id);
+  
+//     if (filterItems.length > 5) {
+//       // **If already expanded before, restore all items immediately**
+//       if (alreadyExpanded) {
+//         filterItems.forEach((item: any) => (item.style.display = 'block'));
+  
+//         // Ensure there is no height restriction or hidden space
+//         const filterList = filterPanel.querySelector('.ag-set-filter-list');
+//         if (filterList) {
+//           filterList.style.maxHeight = 'none';
+//           filterList.style.overflow = 'visible';
+//         }
+  
+//         // Remove the "Show More" button if it exists
+//         const existingShowMore = filterPanel.querySelector('.show-more-button');
+//         if (existingShowMore) existingShowMore.remove();
+//       } 
+//       // **If this filter is expanded for the first time, apply "Show More" logic**
+//       else if (!filterPanel.querySelector('.show-more-button')) {
+//         filterItems.forEach((item: any, index: number) => {
+//           if (index >= 5) item.style.display = 'none';
+//         });
+  
+//         // Remove any height restrictions that cause gaps
+//         // const filterList = filterPanel.querySelector('.ag-set-filter-list');
+//         // if (filterList) {
+//         //   filterList.style.maxHeight = 'none';
+//         //   filterList.style.overflow = 'visible';
+//         // }
+
+//          const initialfilterPanel = filterPanel.querySelector('.ag-virtual-list-viewport')
+//     if (initialfilterPanel) {
+//       initialfilterPanel.style.overflow = 'hidden'; // No inner scroll
+//       if(!filterPanel.querySelector('.show-more-button')) {
+//         initialfilterPanel.style.height = '100px !important';
+//       } else {
+//         initialfilterPanel.style.height = 'auto';
+//       }
+//     }
+  
+//         // Add "Show More" button
+//         const showMoreButton = document.createElement('div');
+//         showMoreButton.classList.add('show-more-button');
+//         showMoreButton.innerText = 'Show More';
+//         showMoreButton.style.marginTop = '105px;
+//         showMoreButton.onclick = () => this.toggleShowMore(filterPanel);
+  
+//         filterPanel.querySelector('.ag-virtual-list-container').appendChild(showMoreButton);
+//       }
+//     }
+//   }
+  
+  
+  
+
+//   private toggleShowMore(filterPanel: any) {
+//     const filterItems = filterPanel.querySelectorAll('.ag-virtual-list-item.ag-filter-virtual-list-item');
+//     const showMoreButton = filterPanel.querySelector('.show-more-button');
+
+//     if (!showMoreButton) return;
+
+//     // Show all items when clicked
+//     filterItems.forEach((item: any) => {
+//       item.style.display = 'block';
+//     });
+
+//     // Remove height limit from filter list to avoid inner scrolling
+//     const filterList = filterPanel.querySelector('.ag-set-filter-list');
+//     if (filterList) {
+//       filterList.style.height = 'auto';
+//     }
+
+//     // Remove the "Show More" button after clicking
+//     showMoreButton.remove();
+//   }
+
+//   ngOnDestroy() {
+//     // Cleanup event listeners when component is destroyed
+//     const filterPanels = document.querySelectorAll('.ag-filter-toolpanel-group-wrapper');
+//     filterPanels.forEach((filterPanel: any) => {
+//       const filterHeader = filterPanel.querySelector('.ag-filter-toolpanel-header');
+//       filterHeader.removeEventListener('click', this.listenForFilterExpansion);
+//     });
+//   }
+// }
+
+
+///////
+
+// import {AfterViewInit, Component, Inject, Injectable, OnDestroy} from '@angular/core';
+// import {SelectionModel} from '@angular/cdk/collections';
+// import {FlatTreeControl, NestedTreeControl} from '@angular/cdk/tree';
+// import {MatTreeFlattener, MatTreeFlatDataSource, MatTreeNestedDataSource} from '@angular/material/tree';
+// import {of as ofObservable, Observable, BehaviorSubject} from 'rxjs';
+// import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+// import { MatCheckboxModule } from '@angular/material/checkbox';
+// import { MatFormFieldModule } from '@angular/material/form-field';
+// import { MatInputModule } from '@angular/material/input';
+// import { FormsModule } from '@angular/forms';
+// import { MatTreeModule } from '@angular/material/tree';
+// import { MatIconModule } from '@angular/material/icon';
+// import { MatButtonModule } from '@angular/material/button';
+// import { NgFor, NgIf } from '@angular/common';
+
+// interface TreeNode {
+//     name: string;
+//     children?: TreeNode[];
+//     expanded?: boolean; // For toggling visibility
+//     searchText?: string; // For search input
+//   }
+// /**
+//  * @title Tree with checkboxes
+//  */
+// @Component({
+//   selector: 'tree-checklist-example',
+//   templateUrl: 'tree-checklist-example.html',
+//   styleUrls: ['tree-checklist-example.css'],
+//   imports: [FormsModule,MatInputModule,NgFor,NgIf,
+//     MatTreeModule, MatCheckboxModule, MatIconModule, MatFormFieldModule,MatDialogModule,MatFormFieldModule, MatButtonModule
+//   ],
+//   standalone: true,
+// })
+// export class TreeChecklistExample implements AfterViewInit, OnDestroy {
+//   private filtersWithMoreThanFiveItems = new Set<string>(); // Tracks filters where "Show More" was added
+//   private manuallyExpandedFilters = new Set<string>()
+
+//   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+
+//   ngAfterViewInit() {
+//     const filterPanel = this.data.gridApi.getToolPanelInstance('filters');
+//     if (filterPanel) {
+//       const container = document.getElementById('filterPanelContainer');
+//       if (container) {
+//         container.innerHTML = ''; // Clear previous content
+//         container.appendChild(filterPanel.getGui()); // Append AG Grid filter panel
+
+//         // Listen for filter expansion after loading
+//         this.listenForFilterExpansion();
+//       }
+//     }
+//   }
+
+//   private listenForFilterExpansion() {
+//     const filterPanels = document.querySelectorAll('.ag-filter-toolpanel-group-wrapper');
+
+//     filterPanels.forEach((filterPanel: any) => {
+//       const filterHeader = filterPanel.querySelector('.ag-filter-toolpanel-header');
+
+//       // Listen for click on filter headers to track expansion
+//       filterHeader.addEventListener('click', () => {
+//         setTimeout(() => {
+//           this.applyShowMoreToExpandedFilter(filterPanel);
+//         }, 200);
+//       });
+//     });
+//   }
+//   private applyShowMoreToExpandedFilter(filterPanel: any) {
+//     const filterItems = filterPanel.querySelectorAll('.ag-virtual-list-item.ag-filter-virtual-list-item');
+  
+//     // Check if "Show More" was already clicked for this filter
+//     const alreadyExpanded = this.filtersWithMoreThanFiveItems.has(filterPanel.id);
+  
+//     if (filterItems.length > 5) {
+//       // **If already expanded before, restore all items immediately**
+//       if (alreadyExpanded) {
+//         filterItems.forEach((item: any) => (item.style.display = 'block'));
+  
+//         // Ensure there is no height restriction or hidden space
+//         const filterList = filterPanel.querySelector('.ag-set-filter-list');
+//         if (filterList) {
+//           filterList.style.maxHeight = 'none';
+//           filterList.style.overflow = 'visible';
+//         }
+  
+//         // Remove the "Show More" button if it exists
+//         const existingShowMore = filterPanel.querySelector('.show-more-button');
+//         if (existingShowMore) existingShowMore.remove();
+//       } 
+//       // **If this filter is expanded for the first time, apply "Show More" logic**
+//       else if (!filterPanel.querySelector('.show-more-button')) {
+//         filterItems.forEach((item: any, index: number) => {
+//           if (index >= 5) item.style.display = 'none';
+//         });
+  
+//         // Remove any height restrictions that cause gaps
+//         // const filterList = filterPanel.querySelector('.ag-set-filter-list');
+//         // if (filterList) {
+//         //   filterList.style.maxHeight = 'none';
+//         //   filterList.style.overflow = 'visible';
+//         // }
+
+//          const initialfilterPanel = filterPanel.querySelector('.ag-virtual-list-viewport')
+//     if (initialfilterPanel) {
+//       initialfilterPanel.style.overflow = 'hidden'; // No inner scroll
+//       if(!filterPanel.querySelector('.show-more-button')) {
+//         initialfilterPanel.style.height = '100px !important';
+//       } else {
+//         initialfilterPanel.style.height = 'auto';
+//       }
+//     }
+  
+//         // Add "Show More" button
+//         const showMoreButton = document.createElement('div');
+//         showMoreButton.classList.add('show-more-button');
+//         showMoreButton.innerText = 'Show More';
+//         showMoreButton.style.marginTop = 'Show More';
+//         showMoreButton.onclick = () => this.toggleShowMore(filterPanel);
+  
+//         filterPanel.appendChild(showMoreButton);
+//       }
+//     }
+//   }
+  
+  
+  
+
+//   private toggleShowMore(filterPanel: any) {
+//     const filterItems = filterPanel.querySelectorAll('.ag-virtual-list-item.ag-filter-virtual-list-item');
+//     const showMoreButton = filterPanel.querySelector('.show-more-button');
+
+//     if (!showMoreButton) return;
+
+//     // Show all items when clicked
+//     filterItems.forEach((item: any) => {
+//       item.style.display = 'block';
+//     });
+
+//     // Remove height limit from filter list to avoid inner scrolling
+//     const filterList = filterPanel.querySelector('.ag-set-filter-list');
+//     if (filterList) {
+//       filterList.style.height = 'auto';
+//     }
+    
+
+//     // Remove the "Show More" button after clicking
+//     showMoreButton.remove();
+//   }
+
+//   collapseAll() {
+//     this.ngOnDestroy()
+//   }
+
+//   ngOnDestroy() {
+//     // Cleanup event listeners when component is destroyed
+//     const filterPanels = document.querySelectorAll('.ag-filter-toolpanel-group-wrapper');
+    
+//     filterPanels.forEach((filterPanel: any) => {
+//       // Collapse each filter by hiding all items after the first 5
+//       const filterItems = filterPanel.querySelectorAll('.ag-virtual-list-item.ag-filter-virtual-list-item');
+//       if (filterItems.length > 5) {
+//         filterItems.forEach((item: any, index: number) => {
+//           if (index >= 5) item.style.display = 'none';
+//         });
+  
+//         // Remove the "Show More" button if it exists
+//         const existingShowMore = filterPanel.querySelector('.show-more-button');
+//         if (existingShowMore) existingShowMore.remove();
+  
+//         // Reset the height and overflow styles for the filter list
+//         const filterList = filterPanel.querySelector('.ag-set-filter-list');
+//         if (filterList) {
+//           filterList.style.maxHeight = '';
+//           filterList.style.overflow = '';
+//         }
+//       }
+  
+//       // Collapse the panel (if any collapse logic is implemented)
+//       const collapseButton = filterPanel.querySelector('.ag-filter-toolpanel-header');
+//       if (collapseButton) {
+//         collapseButton.click(); // Trigger the collapse action if needed
+//       }
+//     });
+  
+//     // Remove event listeners to prevent memory leaks
+//     const filterPanelsWithListeners = document.querySelectorAll('.ag-filter-toolpanel-group-wrapper');
+//     filterPanelsWithListeners.forEach((filterPanel: any) => {
+//       const filterHeader = filterPanel.querySelector('.ag-filter-toolpanel-header');
+//       if (filterHeader) {
+//         filterHeader.removeEventListener('click', this.listenForFilterExpansion);
+//       }
+//     });
+//   }
+  
+// }
+///
+// ---------------
+//looks good 
+// import {AfterViewInit, Component, Inject, Injectable, OnDestroy} from '@angular/core';
+// import {SelectionModel} from '@angular/cdk/collections';
+// import {FlatTreeControl, NestedTreeControl} from '@angular/cdk/tree';
+// import {MatTreeFlattener, MatTreeFlatDataSource, MatTreeNestedDataSource} from '@angular/material/tree';
+// import {of as ofObservable, Observable, BehaviorSubject} from 'rxjs';
+// import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+// import { MatCheckboxModule } from '@angular/material/checkbox';
+// import { MatFormFieldModule } from '@angular/material/form-field';
+// import { MatInputModule } from '@angular/material/input';
+// import { FormsModule } from '@angular/forms';
+// import { MatTreeModule } from '@angular/material/tree';
+// import { MatIconModule } from '@angular/material/icon';
+// import { MatButtonModule } from '@angular/material/button';
+// import { NgFor, NgIf } from '@angular/common';
+
+// interface TreeNode {
+//     name: string;
+//     children?: TreeNode[];
+//     expanded?: boolean; // For toggling visibility
+//     searchText?: string; // For search input
+//   }
+// /**
+//  * @title Tree with checkboxes
+//  */
+// @Component({
+//   selector: 'tree-checklist-example',
+//   templateUrl: 'tree-checklist-example.html',
+//   styleUrls: ['tree-checklist-example.css'],
+//   imports: [FormsModule,MatInputModule,NgFor,NgIf,
+//     MatTreeModule, MatCheckboxModule, MatIconModule, MatFormFieldModule,MatDialogModule,MatFormFieldModule, MatButtonModule
+//   ],
+//   standalone: true,
+// })
+// export class TreeChecklistExample implements AfterViewInit, OnDestroy {
+//   private filtersWithMoreThanFiveItems = new Set<string>(); // Tracks filters where "Show More" was added
+//   private manuallyExpandedFilters = new Set<string>()
+//   private showMoreClicked = new Set<string>()
+
+//   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+
+//   ngAfterViewInit() {
+//     const filterPanel = this.data.gridApi.getToolPanelInstance('filters');
+//     if (filterPanel) {
+//       const container = document.getElementById('filterPanelContainer');
+//       if (container) {
+//         container.innerHTML = ''; // Clear previous content
+//         container.appendChild(filterPanel.getGui()); // Append AG Grid filter panel
+
+//         // Listen for filter expansion after loading
+//         this.listenForFilterExpansion();
+//       }
+//     }
+//   }
+
+//   private listenForFilterExpansion() {
+//     const filterPanels = document.querySelectorAll('.ag-filter-toolpanel-group-wrapper');
+
+//     filterPanels.forEach((filterPanel: any, index: number) => {
+//       // Assign a unique ID using the index if it doesn't have one
+//       if (!filterPanel.id) {
+//         filterPanel.id = `filterPanel-${index}`;
+//       }
+//       const filterHeader = filterPanel.querySelector('.ag-filter-toolpanel-header');
+//       // Collapse the panel (if any collapse logic is implemented)
+//       const collapseButton = filterPanel.querySelector('.ag-filter-toolpanel-header');
+//       const isExpanded = filterPanel.querySelector('.ag-filter-toolpanel-header').ariaExpanded
+//       // set default view to collapse
+//       if (collapseButton && isExpanded === 'true') {
+//         collapseButton.click(); // Trigger the collapse action if needed
+//       }
+
+//       // Listen for click on filter headers to track expansion
+//       filterHeader.addEventListener('click', () => {
+//         // setTimeout(() => {
+//           this.applyShowMoreToExpandedFilter(filterPanel);
+//         // }, 200);
+//       });
+//     });
+//   }
+//   private applyShowMoreToExpandedFilter(filterPanel: any) {
+//     const filterItems = filterPanel.querySelectorAll('.ag-virtual-list-item.ag-filter-virtual-list-item');
+  
+//     const initialfilterPanel = filterPanel.querySelector('.ag-virtual-list-viewport')
+//     // Check if "Show More" was already clicked for this filter
+//     const alreadyExpanded = this.filtersWithMoreThanFiveItems.has(filterPanel.id);
+//     const showMoreAlreadyClicked = this.showMoreClicked.has(filterPanel.id);
+//     // Check for "Show More" button if it exists
+//     const showMoreButton = filterPanel.querySelector('.show-more-button');
+    
+//     const currentState = filterPanel.querySelector('.ag-filter-toolpanel-header').ariaExpanded
+//     if(currentState === 'false') {
+//       if (initialfilterPanel) {
+//         initialfilterPanel.style.overflow = 'hidden'; 
+//         filterPanel.querySelector('.ag-set-filter-list').style.height="none"
+//     }
+//   }
+  
+//     if (filterItems.length > 5) {
+//       // **If already expanded before, restore all items immediately**
+//       if (showMoreAlreadyClicked) {
+//         filterItems.forEach((item: any) => (item.style.display = 'block'));
+  
+//         // Ensure there is no height restriction or hidden space
+//         const filterList = filterPanel.querySelector('.ag-set-filter-list');
+//         // if (filterList) {
+//         //   filterList.style.maxHeight = 'none';
+//         //   filterList.style.overflow = 'visible';
+//         // }
+//         if (filterList) {
+//             filterList.style.height = 'auto';
+//           }
+  
+//         if (showMoreButton) showMoreButton.remove();
+//       } else if (showMoreButton && !showMoreAlreadyClicked) {
+//         filterItems.forEach((item: any, index: number) => {
+//           if (index >= 5) item.style.display = 'none';
+//         });
+
+//     if (initialfilterPanel) {
+//       initialfilterPanel.style.overflow = 'hidden'; // No inner scroll
+//       if(!filterPanel.querySelector('.show-more-button')) {
+//         initialfilterPanel.style.height = '100px !important';
+//       } 
+//     }
+//       }
+//       // **If this filter is expanded for the first time, apply "Show More" logic**
+//       else if (!showMoreButton) {
+//         filterItems.forEach((item: any, index: number) => {
+//           if (index >= 5) item.style.display = 'none';
+//         });
+  
+//         // Remove any height restrictions that cause gaps
+//         // const filterList = filterPanel.querySelector('.ag-set-filter-list');
+//         // if (filterList) {
+//         //   filterList.style.maxHeight = 'none';
+//         //   filterList.style.overflow = 'visible';
+//         // }
+
+//     if (initialfilterPanel) {
+//       initialfilterPanel.style.overflow = 'hidden'; // No inner scroll
+//       if(!filterPanel.querySelector('.show-more-button')) {
+//         initialfilterPanel.style.height = '100px !important';
+//       } else {
+//         initialfilterPanel.style.height = 'auto';
+//       }
+//     }
+  
+//         // Add "Show More" button
+//         const showMoreButton = document.createElement('div');
+//         showMoreButton.classList.add('show-more-button');
+//         showMoreButton.innerText = 'Show More';
+//         showMoreButton.style.marginTop = 'Show More';
+//         showMoreButton.onclick = () => this.toggleShowMore(filterPanel);
+  
+//         filterPanel.appendChild(showMoreButton);
+//         this.filtersWithMoreThanFiveItems.add(filterPanel.id)
+//       }
+//     }
+//   }
+  
+  
+  
+
+//   private toggleShowMore(filterPanel: any) {
+//     const filterItems = filterPanel.querySelectorAll('.ag-virtual-list-item.ag-filter-virtual-list-item');
+//     const showMoreButton = filterPanel.querySelector('.show-more-button');
+
+//     if (!showMoreButton) return;
+
+//     // Show all items when clicked
+//     filterItems.forEach((item: any) => {
+//       item.style.display = 'block';
+//     });
+
+//     // Remove height limit from filter list to avoid inner scrolling
+//     const filterList = filterPanel.querySelector('.ag-set-filter-list');
+//     if (filterList) {
+//       filterList.style.height = 'auto';
+//     }
+    
+//     this.showMoreClicked.add(filterPanel.id)
+    
+//     // Remove the "Show More" button after clicking
+//     showMoreButton.remove();
+//   }
+
+//   collapseAll() {
+//     this.ngOnDestroy()
+//   }
+
+//   // ngOnDestroy() {
+//   //   // Cleanup event listeners when component is destroyed
+//   //   const filterPanels = document.querySelectorAll('.ag-filter-toolpanel-group-wrapper');
+    
+//   //   filterPanels.forEach((filterPanel: any) => {
+//   //     // Collapse each filter by hiding all items after the first 5
+//   //     const filterItems = filterPanel.querySelectorAll('.ag-virtual-list-item.ag-filter-virtual-list-item');
+//   //     if (filterItems.length > 5) {
+//   //       filterItems.forEach((item: any, index: number) => {
+//   //         if (index >= 5) item.style.display = 'none';
+//   //       });
+  
+//   //       // Remove the "Show More" button if it exists
+//   //       const showMoreButton = filterPanel.querySelector('.show-more-button');
+//   //       if (showMoreButton) showMoreButton.remove();
+  
+//   //       // Reset the height and overflow styles for the filter list
+//   //       const filterList = filterPanel.querySelector('.ag-set-filter-list');
+//   //       if (filterList) {
+//   //         filterList.style.maxHeight = '';
+//   //         filterList.style.overflow = '';
+//   //       }
+//   //     }
+  
+//   //     // Collapse the panel (if any collapse logic is implemented)
+//   //     const collapseButton = filterPanel.querySelector('.ag-filter-toolpanel-header');
+//   //     if (collapseButton) {
+//   //       collapseButton.click(); // Trigger the collapse action if needed
+//   //     }
+//   //   });
+  
+//   //   // Remove event listeners to prevent memory leaks
+//   //   const filterPanelsWithListeners = document.querySelectorAll('.ag-filter-toolpanel-group-wrapper');
+//   //   filterPanelsWithListeners.forEach((filterPanel: any) => {
+//   //     const filterHeader = filterPanel.querySelector('.ag-filter-toolpanel-header');
+//   //     if (filterHeader) {
+//   //       filterHeader.removeEventListener('click', this.listenForFilterExpansion);
+//   //     }
+//   //   });
+//   // }
+//    ngOnDestroy() {
+//         // Cleanup event listeners when component is destroyed
+//         const filterPanels = document.querySelectorAll('.ag-filter-toolpanel-group-wrapper');
+//         filterPanels.forEach((filterPanel: any) => {
+//           const filterHeader = filterPanel.querySelector('.ag-filter-toolpanel-header');
+//           filterHeader.removeEventListener('click', this.listenForFilterExpansion);
+//         });
+//       }
+//     }
+  
+
+///////final
+// <h2 mat-dialog-title>Filters</h2>
+// {{loading}}
+// <div *ngIf="loading" class="overlay">
+//   <div class="spinner"></div>
+// </div>
+// <mat-dialog-content>
+//   <!-- AG Grid Filter Panel -->
+//   <div id="filterPanelContainer" class="ag-theme-alpine" style="width: 100%; height: 400px;"></div>
+// </mat-dialog-content>
+
+// <mat-dialog-actions align="end">
+//   <button mat-button mat-dialog-close (click)="collapseAll()">Close</button>
+// </mat-dialog-actions>
+
+
+// import {AfterViewInit, Component, Inject, Injectable, OnDestroy} from '@angular/core';
+// import {SelectionModel} from '@angular/cdk/collections';
+// import {FlatTreeControl, NestedTreeControl} from '@angular/cdk/tree';
+// import {MatTreeFlattener, MatTreeFlatDataSource, MatTreeNestedDataSource} from '@angular/material/tree';
+// import {of as ofObservable, Observable, BehaviorSubject} from 'rxjs';
+// import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+// import { MatCheckboxModule } from '@angular/material/checkbox';
+// import { MatFormFieldModule } from '@angular/material/form-field';
+// import { MatInputModule } from '@angular/material/input';
+// import { FormsModule } from '@angular/forms';
+// import { MatTreeModule } from '@angular/material/tree';
+// import { MatIconModule } from '@angular/material/icon';
+// import { MatButtonModule } from '@angular/material/button';
+// import { NgFor, NgIf } from '@angular/common';
+
+// interface TreeNode {
+//     name: string;
+//     children?: TreeNode[];
+//     expanded?: boolean; // For toggling visibility
+//     searchText?: string; // For search input
+//   }
+// /**
+//  * @title Tree with checkboxes
+//  */
+// @Component({
+//   selector: 'tree-checklist-example',
+//   templateUrl: 'tree-checklist-example.html',
+//   styleUrls: ['tree-checklist-example.css'],
+//   imports: [FormsModule,MatInputModule,NgFor,NgIf,
+//     MatTreeModule, MatCheckboxModule, MatIconModule, MatFormFieldModule,MatDialogModule,MatFormFieldModule, MatButtonModule
+//   ],
+//   standalone: true,
+// })
+// export class TreeChecklistExample implements AfterViewInit, OnDestroy {
+//   private filtersWithMoreThanFiveItems = new Set<string>(); // Tracks filters where "Show More" was added
+//   private manuallyExpandedFilters = new Set<string>();
+//   private showMoreClicked = new Set<string>();
+//   private eventListenersAdded = false; // Flag to prevent multiple event bindings
+//   private fulldiv = document.getElementById('overlay')
+//   loading: boolean = false;
+
+//   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+
+//   ngAfterViewInit() {
+   
+    
+//     console.log('oninit')
+//     const filterPanel = this.data.gridApi.getToolPanelInstance('filters');
+//     if (filterPanel) {
+//       const container = document.getElementById('filterPanelContainer');
+//       if (container) {
+//         container.innerHTML = ''; // Clear previous content
+//         container.appendChild(filterPanel.getGui()); // Append AG Grid filter panel
+//         // Only add event listeners once
+//         if (!this.eventListenersAdded) {
+//           this.listenForFilterExpansion();
+//           this.eventListenersAdded = true;
+//         }
+//       }
+//     }
+//   }
+
+//   private listenForFilterExpansion() {
+//     console.log('listenForFilterExpansion')
+//     const filterPanels = document.querySelectorAll('.ag-filter-toolpanel-group-wrapper');
+
+//     filterPanels.forEach((filterPanel: any, index: number) => {
+//       if (!filterPanel.id) {
+//         filterPanel.id = `filterPanel-${index}`;
+//       }
+
+//       const filterHeader = filterPanel.querySelector('.ag-filter-toolpanel-header');
+//       if (!filterHeader) return;
+
+//       // Attach event listener only if not already added
+//       if (!filterHeader.hasAttribute('data-listener-added')) {
+//         filterHeader.setAttribute('data-listener-added', 'true');
+
+//         filterHeader.addEventListener('click', () => {
+//           this.loading = true
+//           setTimeout(() => {
+//             this.applyShowMoreToExpandedFilter(filterPanel);
+//           }, 100); // Keeping timeout to fix scroll issue
+//         });
+//       }
+//        // Collapse the panel (if any collapse logic is implemented)
+//       const collapseButton = filterPanel.querySelector('.ag-filter-toolpanel-header');
+//       const isExpanded = filterPanel.querySelector('.ag-filter-toolpanel-header').ariaExpanded
+//       // set default view to collapse
+//       if (collapseButton && isExpanded === 'true') {
+//         collapseButton.click(); // Trigger the collapse action if needed
+//       }
+//     });
+//   }
+
+//   private applyShowMoreToExpandedFilter(filterPanel: any) {
+//     console.log('applyShowMoreToExpandedFilter')
+//     const filterItems = filterPanel.querySelectorAll('.ag-virtual-list-item.ag-filter-virtual-list-item');
+//     const initialfilterPanel = filterPanel.querySelector('.ag-virtual-list-viewport');
+//     const alreadyExpanded = this.filtersWithMoreThanFiveItems.has(filterPanel.id);
+//     const showMoreAlreadyClicked = this.showMoreClicked.has(filterPanel.id);
+//     const showMoreButton = filterPanel.querySelector('.show-more-button');
+
+//     const currentState = filterPanel.querySelector('.ag-filter-toolpanel-header').ariaExpanded;
+//     if (currentState === 'false') {
+//       if (initialfilterPanel) {
+//         initialfilterPanel.style.overflow = 'hidden';
+//         filterPanel.querySelector('.ag-set-filter-list').style.height = 'none';
+//       }
+//     }
+
+//     if (filterItems.length > 5) {
+//       if (showMoreAlreadyClicked) {
+//         filterItems.forEach((item: any) => (item.style.display = 'block'));
+//         const filterList = filterPanel.querySelector('.ag-set-filter-list');
+//         if (filterList) {
+//           filterList.style.height = 'auto';
+//         }
+//         if (showMoreButton) showMoreButton.remove();
+//       } else if (showMoreButton && !showMoreAlreadyClicked) {
+//         filterItems.forEach((item: any, index: number) => {
+//           if (index >= 5) item.style.display = 'none';
+//         });
+
+//         if (initialfilterPanel) {
+//           initialfilterPanel.style.overflow = 'hidden';
+//           if (!filterPanel.querySelector('.show-more-button')) {
+//             initialfilterPanel.style.height = '100px !important';
+//           }
+//         }
+//       } else if (!showMoreButton) {
+//         filterItems.forEach((item: any, index: number) => {
+//           if (index >= 5) item.style.display = 'none';
+//         });
+
+//         if (initialfilterPanel) {
+//           initialfilterPanel.style.overflow = 'hidden';
+//           if (!filterPanel.querySelector('.show-more-button')) {
+//             initialfilterPanel.style.height = '100px !important';
+//           } else {
+//             initialfilterPanel.style.height = 'auto';
+//           }
+//         }
+
+//         const showMoreButton = document.createElement('div');
+//         showMoreButton.classList.add('show-more-button');
+//         showMoreButton.innerText = 'Show More';
+//         showMoreButton.style.marginTop = 'Show More';
+//         showMoreButton.onclick = () => this.toggleShowMore(filterPanel);
+
+//         filterPanel.appendChild(showMoreButton);
+//         this.filtersWithMoreThanFiveItems.add(filterPanel.id);
+//       }
+//     }
+//     this.loading = false
+//   }
+
+//   private toggleShowMore(filterPanel: any) {
+//     const filterItems = filterPanel.querySelectorAll('.ag-virtual-list-item.ag-filter-virtual-list-item');
+//     const showMoreButton = filterPanel.querySelector('.show-more-button');
+
+//     if (!showMoreButton) return;
+
+//     filterItems.forEach((item: any) => {
+//       item.style.display = 'block';
+//     });
+
+//     const filterList = filterPanel.querySelector('.ag-set-filter-list');
+//     if (filterList) {
+//       filterList.style.height = 'auto';
+//     }
+
+//     this.showMoreClicked.add(filterPanel.id);
+//     showMoreButton.remove();
+//   }
+
+//   collapseAll() {
+//     this.ngOnDestroy();
+//   }
+
+//   ngOnDestroy() {
+//     this.filtersWithMoreThanFiveItems.clear();
+//     this.showMoreClicked.clear();
+//     this.manuallyExpandedFilters.clear();
+//     this.eventListenersAdded = false;
+
+//     // Remove event listeners when closing modal
+//     // const filterPanels = document.querySelectorAll('.ag-filter-toolpanel-group-wrapper');
+//     // filterPanels.forEach((filterPanel: any) => {
+//     //   const filterHeader = filterPanel.querySelector('.ag-filter-toolpanel-header');
+//     //   if (filterHeader && filterHeader.hasAttribute('data-listener-added')) {
+//     //     filterHeader.removeAttribute('data-listener-added');
+//     //   }
+//     // });
+//   }
+// }
+
