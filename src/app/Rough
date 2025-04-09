@@ -1,0 +1,149 @@
+Rough 
+
+interface DataEntry {
+  date: string;
+  alert: number | null;
+  [key: string]: string | number | null;
+}
+
+interface AggregatedEntry {
+  yearMonth: [string, string];
+  month: string;
+  year: number;
+  count: number;
+  [key: string]: string | number;
+}
+
+interface StatusFlags {
+  isCurrent: boolean;
+  hasStalled: boolean;
+  hasOverdue: boolean;
+}
+
+function transformAndSortData(
+  data: DataEntry[],
+  aggregatedFields: string[]
+): Record<number, AggregatedEntry[]> {
+  const result: Record<number, AggregatedEntry[]> = {};
+  const now = new Date();
+  const currentMonth = now.getMonth(); // 0-11
+  const currentYear = now.getFullYear();
+  const allMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  const initFields = (obj: any) => {
+    aggregatedFields.forEach(field => obj[field] = 0);
+  };
+
+  // Determine oldest and latest data date
+  const dates = data.map(d => new Date(d.date));
+  const oldestDataDate = dates.length ? new Date(Math.min(...dates.map(d => d.getTime()))) : now;
+  const latestDataDate = dates.length ? new Date(Math.max(...dates.map(d => d.getTime()))) : now;
+
+  const startYear = Math.min(currentYear, oldestDataDate.getFullYear());
+  const startMonth = currentYear === startYear
+    ? Math.min(currentMonth, oldestDataDate.getMonth())
+    : (startYear === oldestDataDate.getFullYear() ? oldestDataDate.getMonth() : currentMonth);
+
+  const endYear = Math.max(currentYear, latestDataDate.getFullYear());
+  const endMonth = Math.max(currentMonth, latestDataDate.getMonth());
+
+  // Fill actual data
+  for (const entry of data) {
+    const dt = new Date(entry.date);
+    const year = dt.getFullYear();
+    const baseMonth = dt.toLocaleString('en-US', { month: 'short' });
+
+    if (!result[year]) result[year] = [];
+
+    let monthEntry = result[year].find(e => e.month.startsWith(baseMonth));
+    if (!monthEntry) {
+      monthEntry = {
+        yearMonth: [String(year), baseMonth],
+        month: baseMonth,
+        year,
+        count: 0
+      };
+      initFields(monthEntry);
+      (monthEntry as any).statusFlags = {
+        isCurrent: year === currentYear && dt.getMonth() === currentMonth,
+        hasStalled: false,
+        hasOverdue: false
+      };
+      result[year].push(monthEntry);
+    }
+
+    monthEntry.count++;
+    aggregatedFields.forEach(field => {
+      monthEntry![field] += (entry[field] as number) || 0;
+    });
+
+    const flags = (monthEntry as any).statusFlags as StatusFlags;
+    if (entry.alert === 2) flags.hasStalled = true;
+    if (entry.alert === 1) flags.hasOverdue = true;
+  }
+
+  // Fill missing months starting from startYear/startMonth
+  let y = startYear;
+  let m = startMonth;
+
+  while (y < endYear || (y === endYear && m <= endMonth)) {
+    const monthName = allMonths[m];
+    const isCurrent = y === currentYear && m === currentMonth;
+
+    if (!result[y]) result[y] = [];
+
+    if (!result[y].find(e => e.month.startsWith(monthName))) {
+      const entry: AggregatedEntry = {
+        yearMonth: [String(y), isCurrent ? `${monthName}_current` : monthName],
+        month: isCurrent ? `${monthName}_current` : monthName,
+        year: y,
+        count: 0
+      };
+      initFields(entry);
+      result[y].push(entry);
+    }
+
+    // move to next month
+    m++;
+    if (m > 11) {
+      m = 0;
+      y++;
+    }
+  }
+
+  // Final label processing
+  Object.entries(result).forEach(([yearStr, entries]) => {
+    entries.forEach(entry => {
+      const baseMonth = entry.month.split('_')[0];
+      const flags = (entry as any).statusFlags as StatusFlags | undefined;
+
+      if (flags) {
+        if (flags.isCurrent && flags.hasStalled) {
+          entry.month = `${baseMonth}_current_stalled`;
+        } else if (flags.isCurrent && flags.hasOverdue) {
+          entry.month = `${baseMonth}_current_overdue`;
+        } else if (flags.hasStalled) {
+          entry.month = `${baseMonth}_stalled`;
+        } else if (flags.hasOverdue) {
+          entry.month = `${baseMonth}_overdue`;
+        } else if (flags.isCurrent) {
+          entry.month = `${baseMonth}_current`;
+        } else {
+          entry.month = baseMonth;
+        }
+
+        entry.yearMonth[1] = entry.month;
+        delete (entry as any).statusFlags;
+      }
+    });
+
+    // Sort months in order
+    entries.sort((a, b) => {
+      const aIndex = allMonths.indexOf(a.month.split('_')[0]);
+      const bIndex = allMonths.indexOf(b.month.split('_')[0]);
+      return aIndex - bIndex;
+    });
+  });
+
+  return Object.fromEntries(Object.entries(result).sort(([a], [b]) => Number(a) - Number(b)));
+}
