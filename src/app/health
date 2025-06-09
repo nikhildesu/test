@@ -1,0 +1,146 @@
+html
+
+<div class="dashboard">
+  <div class="header">
+    <h2>Advisor One Application Monitoring</h2>
+    <button (click)="runHealthCheck()">Run Health Check</button>
+    <span class="overall-health">Overall Health: <span class="healthy">Healthy [100%]</span></span>
+  </div>
+
+  <div class="category" *ngFor="let category of healthCategories">
+    <h3>{{ category.title }} <span class="percentage">100%</span></h3>
+    <div class="items">
+      <div class="item" *ngFor="let item of category.items">
+        <span class="item-name">{{ item.name }}</span>
+        <span class="status" [ngClass]="item.status">{{ item.status }}</span>
+        <button class="retry-btn" (click)="retry(item)">⟳</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  component
+
+  import { Component } from '@angular/core';
+
+interface HealthItem {
+  name: string;
+  status: 'SUCCESS' | 'FAILED';
+}
+
+interface HealthCategory {
+  title: string;
+  items: HealthItem[];
+}
+
+@Component({
+  selector: 'app-health-dashboard',
+  templateUrl: './health-dashboard.component.html',
+  styleUrls: ['./health-dashboard.component.scss']
+})
+export class HealthDashboardComponent {
+  healthCategories: HealthCategory[] = [
+    {
+      title: 'Login & Impersonation',
+      items: [
+        { name: 'LOGIN', status: 'SUCCESS' },
+        { name: 'IMPERSONATION', status: 'SUCCESS' },
+        { name: 'ADVISORS LIST', status: 'SUCCESS' }
+      ]
+    },
+    {
+      title: 'Admin Actions',
+      items: [
+        { name: 'CLIENT/ACCOUNT SEARCH', status: 'SUCCESS' },
+        { name: 'FEATURE FLAGS', status: 'SUCCESS' },
+        { name: 'NOTIFICATIONS', status: 'SUCCESS' }
+      ]
+    },
+    // Add other categories similarly...
+  ];
+
+  retry(item: HealthItem) {
+    console.log('Retrying:', item.name);
+    // simulate retry logic
+    item.status = 'SUCCESS';
+  }
+
+  runHealthCheck() {
+    console.log('Running overall health check...');
+  }
+}
+
+
+css
+.dashboard {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f4f6f8;
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+
+    .overall-health {
+      font-weight: bold;
+
+      .healthy {
+        color: green;
+        background: #d4edda;
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .category {
+    background: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+
+    h3 {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .items {
+      .item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+
+        .item-name {
+          flex: 1;
+        }
+
+        .status {
+          width: 80px;
+          text-align: center;
+          &.SUCCESS {
+            color: green;
+          }
+          &.FAILED {
+            color: red;
+          }
+        }
+
+        .retry-btn {
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: #007bff;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
