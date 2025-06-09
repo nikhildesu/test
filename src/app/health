@@ -3,21 +3,24 @@ html
 <div class="dashboard">
   <div class="header">
     <h2>Advisor One Application Monitoring</h2>
-    <button (click)="runHealthCheck()">Run Health Check</button>
-    <span class="overall-health">Overall Health: <span class="healthy">Healthy [100%]</span></span>
+    <button (click)="runHealthCheck()">RUN HEALTH CHECK</button>
+    <div class="overall-health">Overall Health: <span class="healthy">HEALTHY [100%]</span></div>
   </div>
 
-  <div class="category" *ngFor="let category of healthCategories">
-    <h3>{{ category.title }} <span class="percentage">100%</span></h3>
-    <div class="items">
-      <div class="item" *ngFor="let item of category.items">
-        <span class="item-name">{{ item.name }}</span>
-        <span class="status" [ngClass]="item.status">{{ item.status }}</span>
-        <button class="retry-btn" (click)="retry(item)">⟳</button>
+  <div class="grid">
+    <div class="category" *ngFor="let category of healthCategories">
+      <h3>{{ category.title }} <span class="percentage">100%</span></h3>
+      <div class="items">
+        <div class="item" *ngFor="let item of category.items">
+          <span class="item-name">{{ item.name }}</span>
+          <span class="status" [ngClass]="item.status">{{ item.status }}</span>
+          <button class="retry-btn" (click)="retry(item)">⟳</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
 
 
 
@@ -77,68 +80,93 @@ css
 .dashboard {
   font-family: Arial, sans-serif;
   padding: 20px;
-  background-color: #f4f6f8;
+  background-color: #f8f9fa;
 
   .header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    background: #fff;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+
+    h2 {
+      flex: 1 1 auto;
+      font-size: 20px;
+    }
+
+    button {
+      background-color: #007bff;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
     .overall-health {
+      margin-left: auto;
       font-weight: bold;
-
       .healthy {
-        color: green;
-        background: #d4edda;
-        padding: 2px 8px;
+        color: #28a745;
+        background-color: #e6f4ea;
+        padding: 4px 8px;
         border-radius: 4px;
       }
     }
   }
 
-  .category {
-    background: #fff;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 15px;
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
 
-    h3 {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
+    .category {
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
-    .items {
-      .item {
+      h3 {
         display: flex;
-        align-items: center;
-        margin-bottom: 8px;
+        justify-content: space-between;
+        font-size: 16px;
+        margin-bottom: 12px;
+        color: #333;
+      }
 
-        .item-name {
-          flex: 1;
-        }
+      .items {
+        .item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 10px;
+          font-size: 14px;
 
-        .status {
-          width: 80px;
-          text-align: center;
-          &.SUCCESS {
-            color: green;
+          .item-name {
+            flex: 1;
           }
-          &.FAILED {
-            color: red;
-          }
-        }
 
-        .retry-btn {
-          background: none;
-          border: none;
-          cursor: pointer;
-          color: #007bff;
-          font-size: 16px;
+          .status {
+            width: 80px;
+            text-align: center;
+            &.SUCCESS {
+              color: green;
+              font-weight: bold;
+            }
+            &.FAILED {
+              color: red;
+              font-weight: bold;
+            }
+          }
+
+          .retry-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #007bff;
+          }
         }
       }
     }
