@@ -10,18 +10,24 @@ html
   <div class="grid">
     <div class="category" *ngFor="let category of healthCategories">
       <h3>{{ category.title }} <span class="percentage">100%</span></h3>
-      <div class="items">
-        <div class="item" *ngFor="let item of category.items">
-          <span class="item-name">{{ item.name }}</span>
-          <span class="status" [ngClass]="item.status">{{ item.status }}</span>
-          <button class="retry-btn" (click)="retry(item)">⟳</button>
+
+      <div class="table">
+        <div class="table-header">
+          <div>Name</div>
+          <div>Status</div>
+          <div>Retry</div>
+        </div>
+        <div class="table-row" *ngFor="let item of category.items">
+          <div class="item-name">{{ item.name }}</div>
+          <div class="status" [ngClass]="item.status">{{ item.status }}</div>
+          <div>
+            <button class="retry-btn" (click)="retry(item)">⟳</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-
 
 
   component
@@ -86,11 +92,11 @@ css
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
     flex-wrap: wrap;
+    margin-bottom: 30px;
 
     h2 {
-      flex: 1 1 auto;
+      flex: 1;
       font-size: 20px;
     }
 
@@ -104,7 +110,6 @@ css
     }
 
     .overall-health {
-      margin-left: auto;
       font-weight: bold;
       .healthy {
         color: #28a745;
@@ -132,43 +137,48 @@ css
         justify-content: space-between;
         font-size: 16px;
         margin-bottom: 12px;
-        color: #333;
       }
 
-      .items {
-        .item {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 10px;
-          font-size: 14px;
+      .table {
+        display: table;
+        width: 100%;
 
-          .item-name {
-            flex: 1;
-          }
+        .table-header,
+        .table-row {
+          display: table-row;
+        }
 
-          .status {
-            width: 80px;
-            text-align: center;
-            &.SUCCESS {
-              color: green;
-              font-weight: bold;
-            }
-            &.FAILED {
-              color: red;
-              font-weight: bold;
-            }
-          }
+        .table-header > div,
+        .table-row > div {
+          display: table-cell;
+          padding: 6px 8px;
+          border-bottom: 1px solid #e0e0e0;
+        }
 
-          .retry-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            color: #007bff;
-          }
+        .table-header {
+          font-weight: bold;
+          background-color: #f1f1f1;
+        }
+
+        .status.SUCCESS {
+          color: green;
+          font-weight: 600;
+        }
+
+        .status.FAILED {
+          color: red;
+          font-weight: 600;
+        }
+
+        .retry-btn {
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: #007bff;
+          font-size: 16px;
         }
       }
     }
   }
 }
+
