@@ -182,3 +182,37 @@ css
   }
 }
 
+
+progessive messge
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-progress-loader',
+  templateUrl: './progress-loader.component.html',
+})
+export class ProgressLoaderComponent implements OnInit {
+  messages = ['Loading...', 'Almost there...', 'Drawing...', 'Finalizing...', 'Done!'];
+  currentMessage = '';
+  private intervalId: any;
+  private messageIndex = 0;
+
+  ngOnInit(): void {
+    this.startProgressMessages();
+  }
+
+  startProgressMessages(): void {
+    this.currentMessage = this.messages[0];
+    this.messageIndex = 1;
+
+    this.intervalId = setInterval(() => {
+      if (this.messageIndex < this.messages.length) {
+        this.currentMessage = this.messages[this.messageIndex];
+        this.messageIndex++;
+      } else {
+        clearInterval(this.intervalId);
+      }
+    }, 3000); // every 3 seconds
+  }
+}
+
+
